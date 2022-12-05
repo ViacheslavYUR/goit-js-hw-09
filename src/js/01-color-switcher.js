@@ -6,8 +6,6 @@ const ref = {
 ref.start.addEventListener('click', startChangeColor);
 ref.stop.addEventListener('click', stopChangeColor);
 
-console.log(ref);
-
 let timerId;
 
 // -------------------------------функціонал змін--------------------------------------------------------
