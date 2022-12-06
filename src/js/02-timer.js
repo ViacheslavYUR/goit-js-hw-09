@@ -4,7 +4,23 @@ import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 import 'notiflix/dist/notiflix-3.2.5.min.css';
 
-flatpickr('#datetime-picker', {});
+//====================================== оголошення  ========================================
+
+const refs = {
+  input: document.querySelector('#datetime-picker'),
+  btn: document.querySelector('[data-start]'),
+  days: document.querySelector('[data-days]'),
+  hours: document.querySelector('[data-hours]'),
+  min: document.querySelector('[data-minutes]'),
+  sec: document.querySelector('[data-seconds]'),
+};
+
+refs.btn.setAttribute('disabled', true);
+refs.btn.addEventListener('click', startTesting);
+
+let selectDate = null;
+let deltaTime = null;
+let timerId = null;
 
 const options = {
   enableTime: true,
@@ -12,12 +28,31 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+    if (options.defaultDate >= selectedDates[0]) {
+      refs.btn.setAttribute('disabled', true);
+      Notiflix.Notify.failure('Please choose a date and time in the future');
+      refs.days.textContent = '00';
+      refs.hours.textContent = '00';
+      refs.min.textContent = '00';
+      refs.sec.textContent = '00';
+      return;
+    }
+    selectDate = Date.parse(selectedDates[0]);
+    refs.btn.removeAttribute('disabled');
+    deltaTime = selectDate - options.defaultDate;
+    const { days, hours, minutes, seconds } = convertMs(deltaTime);
+    refs.days.textContent = addLeadingZero(days);
+    refs.hours.textContent = addLeadingZero(hours);
+    refs.min.textContent = addLeadingZero(minutes);
+    refs.sec.textContent = addLeadingZero(seconds);
+    Notiflix.Notify.success('You are choose a date');
   },
 };
 
+flatpickr('#datetime-picker', options);
+
 // Notiflix.Notify.success('Sol lucet omnibus');
-// Notiflix.Notify.failure('Qui timide rogat docet negare');
+// Notiflix.Notify.failure('Please choose a date in the future');
 // Notiflix.Notify.warning('Memento te hominem esse');
 // Notiflix.Notify.info('Cogito ergo sum');
 
@@ -41,3 +76,28 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 // ============================================================= присвоювання параметру ======================================================================
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, 0);
+}
+
+function startTesting() {
+  let today;
+  timerId = setInterval(() => {
+    today = selectDate - new Date();
+    if (today <= 1000) {
+      Notiflix.Notify.info('Cogito ergo sum');
+      clearInterval(timerId);
+    }
+    const { days, hours, minutes, seconds } = convertMs(today);
+    refs.days.textContent = addLeadingZero(days);
+    refs.hours.textContent = addLeadingZero(hours);
+    refs.min.textContent = addLeadingZero(minutes);
+    refs.sec.textContent = addLeadingZero(seconds);
+    console.log(today);
+  }, 1000);
+}
+// console.log(
+// setInterval(() => {
+//   clearInterval(timerId);
+// }, 5000);
