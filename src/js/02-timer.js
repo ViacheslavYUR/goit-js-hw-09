@@ -31,20 +31,10 @@ const options = {
     if (options.defaultDate >= selectedDates[0]) {
       refs.btn.setAttribute('disabled', true);
       Notiflix.Notify.failure('Please choose a date and time in the future');
-      refs.days.textContent = '00';
-      refs.hours.textContent = '00';
-      refs.min.textContent = '00';
-      refs.sec.textContent = '00';
       return;
     }
     selectDate = Date.parse(selectedDates[0]);
     refs.btn.removeAttribute('disabled');
-    deltaTime = selectDate - options.defaultDate;
-    const { days, hours, minutes, seconds } = convertMs(deltaTime);
-    refs.days.textContent = addLeadingZero(days);
-    refs.hours.textContent = addLeadingZero(hours);
-    refs.min.textContent = addLeadingZero(minutes);
-    refs.sec.textContent = addLeadingZero(seconds);
     Notiflix.Notify.success('You are choose a date');
   },
 };
@@ -97,7 +87,4 @@ function startTesting() {
     console.log(today);
   }, 1000);
 }
-// console.log(
-// setInterval(() => {
-//   clearInterval(timerId);
-// }, 5000);
+// console.log()
